@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Антропометрический анализ | Техническая эстетика и дизайн — РТУ МИРЭА</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="shortcut icon" href="./images/logo.jpg" type="image/jpg">
+</head>
+<body>
+    <div class="container">
+    <div class="header">
+        <div class="logo-area">
+            <div class="mirea-logo-svg">
+                <img class="mirea-logo-jpg" src="./MIREA_Gerb_Colour.jpg" alt="тут должно быть герб РТУ МИРЭА" style="height: 64px; width: 64px; border-radius: 10%;">
+            </div>
+            <div class="logo-text">
+                <h1>РТУ МИРЭА</h1>
+                <p>Институт перспективные технологии и индустриальное програмирование</p>
+            </div>
+        </div>
+        <div class="title-right">
+            <div class="subject">📐 Эргономический анализ · Антропометрические данные</div>
+            <h2>Статистический отчёт</h2>
+        </div>
+    </div>
+    <div class="report-info">
+        <span>📊 Исходные данные: <strong>base.csv</strong> (20 параметров, 10 респондентов + столбец normal). Расчёт моды, медианы, экстремумов и распределения вероятностей.</span>
+        <span class="badge">🔬 Методология: мат. статистика · дизайн-проектирование</span>
+    </div>
+
+    <div class="section-title">
+        <span>📋</span> Сводная таблица антропометрических параметров
+    </div>
+    <div class="table-wrapper">
+        <table class="stats-table" id="statsTable">
+            <thead>
+                <tr><th>Параметр (эстетика/эргономика)</th><th>Мода</th><th>Медиана</th><th>Максимум</th><th>Минимум</th><th>n (измерений)</th></tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+
+    <div class="section-title">
+        <span>📊</span> Детальное распределение вероятностей (относительная частота)
+    </div>
+    <div id="probabilitiesContainer" class="prob-grid"></div>
+    <footer>
+        <p>© РТУ МИРЭА — Кафедра технической эстетики и дизайна | Вычисления: мода (наиболее частое значение), медиана, min/max, эмпирическое распределение.</p>
+        <div class="SNFn">
+            <table style="align-items: center; justify-content: center;">
+            <tr>
+                <th>Проводили практику:</th><th>ФИО</th><th>Контакт</th>
+            </tr>
+            <tr>
+                <td></td><td>Автухович Э.В.</td><td>avtuxoviche@gmail.com</td>
+            </tr>
+            <tr>
+                <td></td><td>Тетерин А.А.</td><td>alexey_teterin8349@mail.ru</td>
+            </tr>
+            <tr>
+                <td></td><td>Моисеев А.Д.</td><td>afanacymoiseev@yandex.ru</td>
+            </tr>
+            <tr>
+                <td></td><td>Чумаевский И.А.</td><td>dozdikchetvetga@gmail.com</td>
+            </tr>
+        </table>
+        </div>
+    </footer>
+</div>
+<script src="./index.js" defer></script>
+</body>
+</html>
