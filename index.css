@@ -272,6 +272,78 @@ body {
             border-radius: 20px;
             transition: width 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         }
+.report-info {
+            background: #eef3fc;
+            padding: 0.8rem 2rem;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .badge {
+            background: #003d7c;
+            color: white;
+            border-radius: 30px;
+            padding: 0.2rem 1rem;
+        }
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            padding: 1.5rem 2rem 0.5rem 2rem;
+            color: #0a2b42;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 0 2rem 1.5rem 2rem;
+            border-radius: 16px;
+            border: 1px solid #e2edf7;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        th {
+            background: #f0f6fe;
+            padding: 0.8rem;
+            text-align: center;
+            border-bottom: 2px solid #cddfed;
+        }
+        td {
+            padding: 0.6rem;
+            text-align: center;
+            border-bottom: 1px solid #e9eff5;
+        }
+        .param-name {
+            font-weight: 600;
+            text-align: left;
+            background: #fafcff;
+        }
+        .chart-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 1rem 2rem 2rem;
+            justify-content: space-between;
+        }
+        .chart-card {
+            flex: 1 1 300px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 1rem;
+        }
+        canvas {
+            max-height: 300px;
+            width: 100%;
+        }
+        .note {
+            background: #fef7e0;
+            padding: 1rem 2rem;
+            margin: 0 2rem 1.5rem;
+            border-radius: 16px;
+            font-size: 0.85rem;
+        }
 
         footer {
             background: #f8fafd;
