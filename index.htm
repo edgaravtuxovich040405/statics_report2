@@ -24,32 +24,41 @@
             <h2>Статистический отчёт</h2>
         </div>
     </div>
+    <div class="title-right">
+            <div class="subject">📊 Статистический анализ на JavaScript</div>
+            <h2>Антропометрический отчёт</h2>
+        </div>
+    </div>
     <div class="report-info">
-        <span>✅ Расчёт выполнен в браузере: мода, медиана, среднее, σ, 5/95 перцентили (линейная интерполяция)</span>
+        <span>✅ Расчёт в браузере: среднее, медиана, мода, σ, 5/95 перцентили, распределение вероятностей</span>
         <span class="badge">JS + Chart.js</span>
     </div>
 
     <div class="section-title">📋 2.1 Методология расчётов (JavaScript)</div>
     <div class="note">
-        <strong>🔧 Реализация на чистом JavaScript:</strong><br>
-        • Очистка данных: удаление значений "None", преобразование в number.<br>
-        • Мода: выбор значения с максимальной частотой; если все частоты =1 → "Нет моды".<br>
-        • Медиана: среднее двух центральных элементов отсортированного массива.<br>
-        • Среднее арифметическое, стандартное отклонение (σ).<br>
-        • Перцентили: метод линейной интерполяции (формула: P = (1-δ)*X_k + δ*X_{k+1}).<br>
-        • Все вычисления производятся динамически из встроенного CSV-массива (base.csv).
+        <strong>🔧 Реализация:</strong><br>
+        • Очистка данных: удаление "None", преобразование в number.<br>
+        • Мода: значение с максимальной частотой; если все уникальны → "Нет моды".<br>
+        • Медиана: среднее двух центральных значений.<br>
+        • Перцентили: метод линейной интерполяции (P = (1-δ)·X_k + δ·X_{k+1}).<br>
+        • Распределение вероятностей: относительная частота каждого уникального значения.<br>
+        • Столбец "normal" (ГОСТ) исключён из статистики группы, используется отдельно для сравнения.
     </div>
-    <div class="section-title">📊 Сводная таблица статистик (20 параметров)</div>
-    <div class="table-wrapper" id="table-wrapper">
+
+    <div class="section-title">📊 Сводная статистика по группе (10 респондентов)</div>
+    <div class="table-wrapper">
         <table id="statsTable">
             <thead>
-                <tr><th>Параметр</th><th>n</th><th>M (среднее)</th><th>Me (медиана)</th><th>Mo (мода)</th><th>σ</th><th>5%</th><th>95%</th><th>Min</th><th>Max</th></tr>
+                <tr><th>Параметр</th><th>n</th><th>Среднее</th><th>Медиана</th><th>Мода</th><th>σ</th><th>5%</th><th>95%</th><th>Min</th><th>Max</th></tr>
             </thead>
             <tbody id="tableBody"></tbody>
         </table>
     </div>
 
-    <div class="section-title">📈 Перцентильные кривые (5, 25, 50, 75, 95 процентили)</div>
+    <div class="section-title">📊 Распределение вероятностей (относительная частота значений)</div>
+    <div id="probabilitiesContainer" class="prob-grid"></div>
+
+    <div class="section-title">📈 Перцентильные кривые (5, 25, 50, 75, 95)</div>
     <div class="chart-grid" id="chartsContainer"></div>
 
     <div class="section-title">🧍 Сравнение со средней фигурой (ГОСТ Р 56620.2)</div>
@@ -59,7 +68,6 @@
             <tbody id="compareBody"></tbody>
         </table>
     </div>
-    <div id="probabilitiesContainer" class="prob-grid"></div>
     <footer>
         <p>© РТУ МИРЭА — Кафедра технической эстетики и дизайна | Вычисления: мода (наиболее частое значение), медиана, min/max, эмпирическое распределение.</p>
         <div class="SNFn">
