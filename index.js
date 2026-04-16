@@ -1,6 +1,6 @@
-// --------------------------------------------------------------
-    // РЕАЛЬНЫЕ ДАННЫЕ ИЗ base.csv (первая строка - заголовки, далее строки параметров)
-    // Восстановлены в точности по предоставленному файлу.
+    import { Chart } from 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.esm.js';
+    // --------------------------------------------------------------
+    // ИСХОДНЫЕ ДАННЫЕ: первая колонка после parametrs - "normal" (ГОСТ, не входит в выборку)
     // --------------------------------------------------------------
     const csvRows = [
         ["parametrs","normal","Avtukhovich","Moiseev","Chumaevskiy","Teterin","Vorbobenko","Prixod'ko","Asta'feva","Merzlyakova","Netzel'skiy","Borisov"],
@@ -26,10 +26,10 @@
         ["Длина бедра","61.0","67.5","63.5","60.8","60","55","50","52","50.5","60.4","65"]
     ];
 
-    // Парсим данные: для каждого параметра (строки, начиная с индекса 1) собираем числовые значения из столбцов 1..end
-    function extractNumericValues(row) {
+    // Извлечение числовых значений группы (столбцы с индекса 2, исключая "normal")
+    function extractGroupValues(row) {
         const values = [];
-        for (let i = 1; i < row.length; i++) {
+        for (let i = 2; i < row.length; i++) {
             let cell = row[i];
             if (cell === "None" || cell === null || cell === "") continue;
             let num = parseFloat(cell);
@@ -38,65 +38,47 @@
         return values;
     }
 
-    // Функция вычисления моды: наиболее частое значение. Если все частоты =1 -> "Нет моды"
-    // Если несколько значений с одинаковой максимальной частотой (>1) -> возвращаем первое (минимальное) и добавляем символ *
-// Статистические функции
+    // Получение ГОСТ-значения (столбец "normal")
+    function getGostValue(row) {
+        let val = parseFloat(row[1]);
+        return isNaN(val) ? null : val;
+    }
+
+    // --- Статистические функции ---
     function mean(arr) {
         if (!arr.length) return NaN;
         return arr.reduce((a,b) => a + b, 0) / arr.length;
     }
-    function computeMode(values) {
-        if (values.length === 0) return "—";
-        const freq = new Map();
-        for (let v of values) {
-            freq.set(v, (freq.get(v) || 0) + 1);
-        }
-        let maxCount = 0;
-        for (let cnt of freq.values()) {
-            if (cnt > maxCount) maxCount = cnt;
-        }
-        if (maxCount === 1) return "Нет моды";
-        const modes = [];
-        for (let [val, cnt] of freq.entries()) {
-            if (cnt === maxCount) modes.push(val);
-        }
-        if (modes.length === 1) return modes[0];
-        else {
-            // мультимода: выбираем наименьшее значение и помечаем
-            const minMode = Math.min(...modes);
-            return `${minMode} (мультимода)`;
-        }
-    }
 
-    // Медиана
-    function computeMedian(values) {
-        if (values.length === 0) return NaN;
-        const sorted = [...values].sort((a,b) => a-b);
+    function median(arr) {
+        if (!arr.length) return NaN;
+        const sorted = [...arr].sort((a,b) => a - b);
         const mid = Math.floor(sorted.length / 2);
         if (sorted.length % 2 === 0) return (sorted[mid-1] + sorted[mid]) / 2;
-        else return sorted[mid];
+        return sorted[mid];
     }
+
+    function mode(arr) {
+        if (!arr.length) return "—";
+        const freq = new Map();
+        for (let v of arr) freq.set(v, (freq.get(v) || 0) + 1);
+        let maxFreq = Math.max(...freq.values());
+        if (maxFreq === 1) return "Нет моды";
+        let modes = [];
+        for (let [val, cnt] of freq.entries()) if (cnt === maxFreq) modes.push(val);
+        modes.sort((a,b) => a-b);
+        if (modes.length === 1) return modes[0];
+        return `${modes[0]} (мультимода)`;
+    }
+
     function stdDev(arr) {
         if (arr.length < 2) return 0;
         const m = mean(arr);
         const squaredDiffs = arr.map(v => (v - m) ** 2);
         return Math.sqrt(squaredDiffs.reduce((a,b) => a + b, 0) / (arr.length - 1));
-    // Вычисление вероятностей (относительная частота)
-    function computeProbabilities(values) {
-        if (values.length === 0) return {};
-        const freq = new Map();
-        for (let v of values) {
-            freq.set(v, (freq.get(v) || 0) + 1);
-        }
-        const total = values.length;
-        const probs = {};
-        for (let [val, cnt] of freq.entries()) {
-            probs[val] = cnt / total;
-        }
-        return probs;
     }
 
-    // Перцентиль методом линейной интерполяции (как в numpy)
+    // Линейная интерполяция перцентиля (как numpy.percentile)
     function percentile(arr, p) {
         if (!arr.length) return NaN;
         const sorted = [...arr].sort((a,b) => a - b);
@@ -109,82 +91,70 @@
         return sorted[lower] * (1 - weight) + sorted[upper] * weight;
     }
 
-    // Сбор статистики по всем параметрам
+    // Вычисление вероятностей (относительная частота)
+    function computeProbabilities(values) {
+        if (values.length === 0) return {};
+        const freq = new Map();
+        for (let v of values) freq.set(v, (freq.get(v) || 0) + 1);
+        const total = values.length;
+        const probs = {};
+        for (let [val, cnt] of freq.entries()) probs[val] = cnt / total;
+        return probs;
+    }
+
+    // --- Сбор статистики по группе ---
     const statistics = [];
+    const gostValues = {};
+
     for (let i = 1; i < csvRows.length; i++) {
         const row = csvRows[i];
         const paramName = row[0];
-        const values = extractValues(row);
-        if (values.length === 0) continue;
-        const stat = {
+        const groupVals = extractGroupValues(row);
+        if (groupVals.length === 0) continue;
+
+        const gost = getGostValue(row);
+        if (gost !== null) gostValues[paramName] = gost;
+
+        statistics.push({
             param: paramName,
-            n: values.length,
-            mean: mean(values),
-            median: median(values),
-            mode: mode(values),
-            std: stdDev(values),
-            p5: percentile(values, 5),
-            p25: percentile(values, 25),
-            p50: percentile(values, 50),
-            p75: percentile(values, 75),
-            p95: percentile(values, 95),
-            min: Math.min(...values),
-            max: Math.max(...values),
-            values: values
-        };
-        statistics.push(stat);
+            n: groupVals.length,
+            rawValues: groupVals,
+            probabilities: computeProbabilities(groupVals),
+            mean: mean(groupVals),
+            median: median(groupVals),
+            mode: mode(groupVals),
+            std: stdDev(groupVals),
+            p5: percentile(groupVals, 5),
+            p25: percentile(groupVals, 25),
+            p50: percentile(groupVals, 50),
+            p75: percentile(groupVals, 75),
+            p95: percentile(groupVals, 95),
+            min: Math.min(...groupVals),
+            max: Math.max(...groupVals)
+        });
     }
-    // Отрисовка таблицы
-    function renderTable() {
+
+    // --- Отрисовка сводной таблицы ---
+    function renderStatsTable() {
         const tbody = document.getElementById('tableBody');
         tbody.innerHTML = '';
-        statistics.forEach(stat => {
+        statistics.forEach(s => {
             const row = tbody.insertRow();
-            // Параметр
-            const paramCell = row.insertCell(0);
-            paramCell.innerHTML = `<span class="param-name">${escapeHtml(stat.param)}</span>`;
-            // Мода
-            const modeCell = row.insertCell(1);
-            if (typeof stat.mode === 'number') {
-                modeCell.innerHTML = `<span class="mode-cell numeric">${stat.mode}</span>`;
-            } else if (stat.mode === "Нет моды") {
-                modeCell.innerHTML = `<span class="mode-cell no-mode">${stat.mode}</span>`;
-            } else {
-                modeCell.innerHTML = `<span class="mode-cell numeric">${escapeHtml(stat.mode)}</span>`;
-            }
-            // Медиана
-            const medianCell = row.insertCell(2);
-            medianCell.innerHTML = `<span class="numeric">${stat.median.toFixed(2)}</span>`;
-            // Максимум
-            const maxCell = row.insertCell(3);
-            maxCell.innerHTML = `<span class="numeric">${stat.max.toFixed(2)}</span>`;
-            // Минимум
-            const minCell = row.insertCell(4);
-            minCell.innerHTML = `<span class="numeric">${stat.min.toFixed(2)}</span>`;
-            // n
-            const nCell = row.insertCell(5);
-            nCell.innerHTML = `<span class="numeric">${stat.n}</span>`;
+            row.insertCell(0).innerHTML = `<strong>${s.param}</strong>`;
+            row.insertCell(1).innerText = s.n;
+            row.insertCell(2).innerText = s.mean.toFixed(2);
+            row.insertCell(3).innerText = s.median.toFixed(2);
+            row.insertCell(4).innerText = (typeof s.mode === 'number') ? s.mode.toFixed(2) : s.mode;
+            row.insertCell(5).innerText = s.std.toFixed(2);
+            row.insertCell(6).innerText = s.p5.toFixed(2);
+            row.insertCell(7).innerText = s.p95.toFixed(2);
+            row.insertCell(8).innerText = s.min.toFixed(2);
+            row.insertCell(9).innerText = s.max.toFixed(2);
         });
     }
 
-    function escapeHtml(str) {
-        if (str === undefined) return '';
-        return String(str).replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-
-    function formatNumberValue(val) {
-        if (typeof val === 'number') {
-            return Number.isInteger(val) ? val.toString() : val.toFixed(2);
-        }
-        return val;
-    }
-
-    function renderProbabilities() {
+    // --- Отрисовка карточек вероятностей ---
+    function renderProbabilitiesCards() {
         const container = document.getElementById('probabilitiesContainer');
         container.innerHTML = '';
         statistics.forEach(stat => {
@@ -223,7 +193,7 @@
                     if (fillDiv) fillDiv.style.width = `${percentVal}%`;
                 }, 20);
             }
-            // доп. информация о моде
+            // Доп. информация о моде
             const modeNote = document.createElement('div');
             modeNote.style.fontSize = '0.7rem';
             modeNote.style.marginTop = '8px';
@@ -243,94 +213,28 @@
         });
     }
 
-    // Анимации появления
-    function animateElements() {
-        const rows = document.querySelectorAll('#statsTable tbody tr');
-        rows.forEach((row, idx) => {
-            row.style.opacity = '0';
-            row.style.transform = 'translateX(-5px)';
-            setTimeout(() => {
-                row.style.transition = 'all 0.2s ease';
-                row.style.opacity = '1';
-                row.style.transform = 'translateX(0)';
-            }, idx * 25);
-        });
-        const cards = document.querySelectorAll('.prob-card');
-        cards.forEach((card, idx) => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(12px)';
-            setTimeout(() => {
-                card.style.transition = 'all 0.25s ease';
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            }, idx * 40);
+    function escapeHtml(str) {
+        if (str === undefined) return '';
+        return String(str).replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
         });
     }
 
-    renderTable();
-    renderProbabilities();
-    setTimeout(() => {
-        animateElements();
-        document.querySelectorAll('.progress-fill').forEach(bar => {
-            const parentItem = bar.closest('.prob-item');
-            if (parentItem) {
-                const percentSpan = parentItem.querySelector('.percent');
-                if (percentSpan) {
-                    let pctText = percentSpan.innerText.replace('%','');
-                    let pct = parseFloat(pctText);
-                    if (!isNaN(pct)) bar.style.width = `${pct}%`;
-                }
-            }
-        });
-    }, 100);
-
-    // Лог в консоль (соответствие python-отчёту)
-    console.log("=== СТАТИСТИЧЕСКИЙ ОТЧЁТ ПО ДАННЫМ base.csv (РТУ МИРЭА) ===");
-    statistics.forEach(s => {
-        console.group(`📏 ${s.param}`);
-        console.log(`Мода: ${s.mode} | Медиана: ${s.median.toFixed(2)} | Max: ${s.max} | Min: ${s.min} | n=${s.n}`);
-        console.log("Вероятности значений:");
-        for (const [val, prob] of Object.entries(s.probabilities)) {
-            console.log(`   ${val} : ${(prob*100).toFixed(2)}%`);
+    function formatNumberValue(val) {
+        if (typeof val === 'number') {
+            return Number.isInteger(val) ? val.toString() : val.toFixed(2);
         }
-        console.groupEnd();
-    });
-    // Отрисовка таблицы
-    function renderStatsTable() {
-        const tbody = document.getElementById('tableBody');
-        tbody.innerHTML = '';
-        statistics.forEach(s => {
-            const row = tbody.insertRow();
-            row.insertCell(0).innerHTML = `<strong>${s.param}</strong>`;
-            row.insertCell(1).innerText = s.n;
-            row.insertCell(2).innerText = s.mean.toFixed(2);
-            row.insertCell(3).innerText = s.median.toFixed(2);
-            row.insertCell(4).innerText = (typeof s.mode === 'number') ? s.mode.toFixed(2) : s.mode;
-            row.insertCell(5).innerText = s.std.toFixed(2);
-            row.insertCell(6).innerText = s.p5.toFixed(2);
-            row.insertCell(7).innerText = s.p95.toFixed(2);
-            row.insertCell(8).innerText = s.min.toFixed(2);
-            row.insertCell(9).innerText = s.max.toFixed(2);
-        });
+        return val;
     }
 
-    // Сравнение с ГОСТ (выборочные параметры)
-    const gostMap = {
-        "рост (высота человека)": 176.0,
-        "Высота уровня глаз": 164.5,
-        "Высота плечевого сустава": 149.0,
-        "Высота локтя": 108.0,
-        "Глубина грудной клетки в положении стоя": 22.0,
-        "Ширина грудной клетки в положении стоя": 32.0,
-        "Высота сидя (прямо)": 90.0,
-        "Высота уровня глаз в положении сидя": 79.0,
-        "Длина кисти руки": 18.5,
-        "Ширина кисти на уровне пястных костей": 8.7
-    };
+    // --- Сравнение с ГОСТ ---
     function renderCompareTable() {
         const tbody = document.getElementById('compareBody');
         tbody.innerHTML = '';
-        for (let [param, gostVal] of Object.entries(gostMap)) {
+        for (let [param, gostVal] of Object.entries(gostValues)) {
             const stat = statistics.find(s => s.param === param);
             if (!stat) continue;
             const diff = stat.median - gostVal;
@@ -342,18 +246,19 @@
         }
     }
 
-    // Построение перцентильных кривых с помощью Chart.js
+    // --- Построение перцентильных кривых (Chart.js) ---
     function renderPercentileCharts() {
         const container = document.getElementById('chartsContainer');
         container.innerHTML = '';
-        // Для краткости покажем первые 8 параметров, можно добавить скролл или выбор
-        const displayParams = statistics.slice(0, 8);
+        // Покажем все параметры (или ограничим первыми 12 для наглядности)
+        const displayParams = statistics; // можно заменить на .slice(0,12)
         displayParams.forEach(stat => {
             const card = document.createElement('div');
             card.className = 'chart-card';
-            card.innerHTML = `<h4 style="margin-bottom:0.5rem;">📐 ${stat.param}</h4><canvas id="chart-${stat.param.replace(/[^a-z0-9]/gi,'_')}" width="400" height="250"></canvas>`;
+            const canvasId = `chart_${stat.param.replace(/[^a-z0-9]/gi, '_')}`;
+            card.innerHTML = `<h4 style="margin-bottom:0.5rem;">📐 ${stat.param}</h4><canvas id="${canvasId}" width="400" height="250"></canvas>`;
             container.appendChild(card);
-            const ctx = card.querySelector('canvas').getContext('2d');
+            const ctx = document.getElementById(canvasId).getContext('2d');
             const percentiles = [5, 25, 50, 75, 95];
             const values = [stat.p5, stat.p25, stat.p50, stat.p75, stat.p95];
             new Chart(ctx, {
@@ -374,21 +279,23 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
-                    plugins: { legend: { position: 'top' }, tooltip: { callbacks: { label: (ctx) => `${ctx.raw.toFixed(2)} см` } } }
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: { callbacks: { label: (ctx) => `${ctx.raw.toFixed(2)} см` } }
+                    }
                 }
             });
         });
     }
 
-    // Вывод методологии в консоль
-    console.log("=== Статистический анализ на JavaScript (методология) ===");
-    console.log("• Очистка от 'None', преобразование в Number");
-    console.log("• Мода: частота, медиана: центральное значение, перцентили: линейная интерполяция");
-    statistics.slice(0,3).forEach(s => {
-        console.log(`${s.param}: медиана=${s.median.toFixed(2)}, 5%=${s.p5.toFixed(2)}, 95%=${s.p95.toFixed(2)}`);
-    });
-
-    // Запуск отрисовки
+    // --- Выполнение всех рендеров ---
     renderStatsTable();
+    renderProbabilitiesCards();
     renderCompareTable();
     renderPercentileCharts();
+
+    // Лог в консоль для проверки
+    console.log("=== СТАТИСТИЧЕСКИЙ ОТЧЁТ (JavaScript) ===");
+    statistics.slice(0, 3).forEach(s => {
+        console.log(`${s.param}: медиана=${s.median.toFixed(2)}, 5%=${s.p5.toFixed(2)}, 95%=${s.p95.toFixed(2)}`);
+    });
