@@ -4,26 +4,26 @@
     // --------------------------------------------------------------
     const csvRows = [
         ["parametrs","normal","Avtukhovich","Moiseev","Chumaevskiy","Teterin","Vorbobenko","Prixod'ko","Asta'feva","Merzlyakova","Netzel'skiy","Borisov"],
-        ["рост (высота человека)","None","195","186","179","177","171","168","165","161","183.5","184.5"],
-        ["Высота уровня глаз","None","183","174.8","173","165.5","159","157","155","149","173","174"],
-        ["Высота плечевого сустава","None","157.5","154.5","149.5","151","151","141","137","133","152","153.5"],
-        ["Высота локтя","None","117","98.5","109","111","103","102","112","105","114","117"],
-        ["Глубина грудной клетки в положении стоя","None","19","21","20.5","21.5","21.5","21","21.5","23.3","25","24"],
-        ["Ширина грудной клетки в положении стоя","None","29","34","33.5","34","31","31.4","26","26.7","40","30.5"],
-        ["Высота сидя (прямо)","None","98","93","95","88.7","86","86.5","86","84.4","84.5","95"],
-        ["Высота уровня глаз в положении сидя","None","88","84.6","82","77","74","85.5","77","75.5","74.3","84.5"],
-        ["Высота шейной точки в положении сидя","None","81","77","81.5","69","64.5","66","67","67","61.4","74"],
-        ["Высота плечевого сустава в положении сидя","None","69","62","63","60","58.3","59","55","55.7","55.2","62"],
-        ["Расстояние «локоть – запястье»","None","31","31","32","30","24","25.5","29","25","30.8","36"],
-        ["Ширина «локоть –локоть»","42","48","46.5","49","41","42","42","41","36","55","42"],
-        ["Длина кисти руки","None","19.5","19","18","19.5","16.7","16","16.5","16","18.8","18"],
-        ["Длина ладони","11","12","10","11","10","9","8.4","9","8.8","10.5","11.9"],
-        ["Ширина кисти на уровне пястных костей","None","9.6","9","8.8","9.4","7.8","7.3","7.8","6.7","8.7","8.8"],
-        ["Глубина головы","None","15","20.3","20.2","19.3","20","18","18","19.4","18","21.5"],
-        ["Ширина головы","None","18.5","14.5","14.5","14.5","17","16","16.5","15.5","17","17"],
-        ["Ось сжатия: протягивание кисти вперед","None","86","80","72.3","79","74","64","68.8","59.8","80.3","75.5"],
-        ["Длина «предплечье – кончик пальцев»","None","53","59.5","48.4","49","44.3","41.1","44","39.6","48","49"],
-        ["Длина бедра","None","67.5","63.5","60.8","60","55","50","52","50.5","60.4","65"]
+        ["рост (высота человека)","176.1","195","186","179","177","171","168","165","161","183.5","184.5"],
+        ["Высота уровня глаз","162.8","183","174.8","173","165.5","159","157","155","149","173","174"],
+        ["Высота плечевого сустава","147.0","157.5","154.5","149.5","151","151","141","137","133","152","153.5"],
+        ["Высота локтя","107.8","117","98.5","109","111","103","102","112","105","114","117"],
+        ["Глубина грудной клетки в положении стоя","23.0","19","21","20.5","21.5","21.5","21","21.5","23.3","25","24"],
+        ["Ширина грудной клетки в положении стоя","34.0","29","34","33.5","34","31","31.4","26","26.7","40","30.5"],
+        ["Высота сидя (прямо)","89.5","98","93","95","88.7","86","86.5","86","84.4","84.5","95"],
+        ["Высота уровня глаз в положении сидя","78.5","88","84.6","82","77","74","85.5","77","75.5","74.3","84.5"],
+        ["Высота шейной точки в положении сидя","65.0","81","77","81.5","69","64.5","66","67","67","61.4","74"],
+        ["Высота плечевого сустава в положении сидя","59.0","69","62","63","60","58.3","59","55","55.7","55.2","62"],
+        ["Расстояние «локоть – запястье»","28.0","31","31","32","30","24","25.5","29","25","30.8","36"],
+        ["Ширина «локоть –локоть»","42.0","48","46.5","49","41","42","42","41","36","55","42"],
+        ["Длина кисти руки","19.0","19.5","19","18","19.5","16.7","16","16.5","16","18.8","18"],
+        ["Длина ладони","11.0","12","10","11","10","9","8.4","9","8.8","10.5","11.9"],
+        ["Ширина кисти на уровне пястных костей","8.5","9.6","9","8.8","9.4","7.8","7.3","7.8","6.7","8.7","8.8"],
+        ["Глубина головы","20.0","15","20.3","20.2","19.3","20","18","18","19.4","18","21.5"],
+        ["Ширина головы","16.0","18.5","14.5","14.5","14.5","17","16","16.5","15.5","17","17"],
+        ["Ось сжатия: протягивание кисти вперед","75.0","86","80","72.3","79","74","64","68.8","59.8","80.3","75.5"],
+        ["Длина «предплечье – кончик пальцев»","49.0","53","59.5","48.4","49","44.3","41.1","44","39.6","48","49"],
+        ["Длина бедра","61.0","67.5","63.5","60.8","60","55","50","52","50.5","60.4","65"]
     ];
 
     // Парсим данные: для каждого параметра (строки, начиная с индекса 1) собираем числовые значения из столбцов 1..end
@@ -40,6 +40,11 @@
 
     // Функция вычисления моды: наиболее частое значение. Если все частоты =1 -> "Нет моды"
     // Если несколько значений с одинаковой максимальной частотой (>1) -> возвращаем первое (минимальное) и добавляем символ *
+// Статистические функции
+    function mean(arr) {
+        if (!arr.length) return NaN;
+        return arr.reduce((a,b) => a + b, 0) / arr.length;
+    }
     function computeMode(values) {
         if (values.length === 0) return "—";
         const freq = new Map();
@@ -71,7 +76,11 @@
         if (sorted.length % 2 === 0) return (sorted[mid-1] + sorted[mid]) / 2;
         else return sorted[mid];
     }
-
+    function stdDev(arr) {
+        if (arr.length < 2) return 0;
+        const m = mean(arr);
+        const squaredDiffs = arr.map(v => (v - m) ** 2);
+        return Math.sqrt(squaredDiffs.reduce((a,b) => a + b, 0) / (arr.length - 1));
     // Вычисление вероятностей (относительная частота)
     function computeProbabilities(values) {
         if (values.length === 0) return {};
@@ -87,30 +96,44 @@
         return probs;
     }
 
+    // Перцентиль методом линейной интерполяции (как в numpy)
+    function percentile(arr, p) {
+        if (!arr.length) return NaN;
+        const sorted = [...arr].sort((a,b) => a - b);
+        const n = sorted.length;
+        const index = (p / 100) * (n - 1);
+        const lower = Math.floor(index);
+        const upper = Math.ceil(index);
+        if (lower === upper) return sorted[lower];
+        const weight = index - lower;
+        return sorted[lower] * (1 - weight) + sorted[upper] * weight;
+    }
+
     // Сбор статистики по всем параметрам
     const statistics = [];
     for (let i = 1; i < csvRows.length; i++) {
         const row = csvRows[i];
         const paramName = row[0];
-        const numericValues = extractNumericValues(row);
-        if (numericValues.length === 0) continue;
-        const modeVal = computeMode(numericValues);
-        const medianVal = computeMedian(numericValues);
-        const maxVal = Math.max(...numericValues);
-        const minVal = Math.min(...numericValues);
-        const probs = computeProbabilities(numericValues);
-        statistics.push({
+        const values = extractValues(row);
+        if (values.length === 0) continue;
+        const stat = {
             param: paramName,
-            mode: modeVal,
-            median: medianVal,
-            max: maxVal,
-            min: minVal,
-            n: numericValues.length,
-            probabilities: probs,
-            rawValues: numericValues
-        });
+            n: values.length,
+            mean: mean(values),
+            median: median(values),
+            mode: mode(values),
+            std: stdDev(values),
+            p5: percentile(values, 5),
+            p25: percentile(values, 25),
+            p50: percentile(values, 50),
+            p75: percentile(values, 75),
+            p95: percentile(values, 95),
+            min: Math.min(...values),
+            max: Math.max(...values),
+            values: values
+        };
+        statistics.push(stat);
     }
-
     // Отрисовка таблицы
     function renderTable() {
         const tbody = document.getElementById('tableBody');
@@ -272,3 +295,100 @@
         }
         console.groupEnd();
     });
+    // Отрисовка таблицы
+    function renderStatsTable() {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+        statistics.forEach(s => {
+            const row = tbody.insertRow();
+            row.insertCell(0).innerHTML = `<strong>${s.param}</strong>`;
+            row.insertCell(1).innerText = s.n;
+            row.insertCell(2).innerText = s.mean.toFixed(2);
+            row.insertCell(3).innerText = s.median.toFixed(2);
+            row.insertCell(4).innerText = (typeof s.mode === 'number') ? s.mode.toFixed(2) : s.mode;
+            row.insertCell(5).innerText = s.std.toFixed(2);
+            row.insertCell(6).innerText = s.p5.toFixed(2);
+            row.insertCell(7).innerText = s.p95.toFixed(2);
+            row.insertCell(8).innerText = s.min.toFixed(2);
+            row.insertCell(9).innerText = s.max.toFixed(2);
+        });
+    }
+
+    // Сравнение с ГОСТ (выборочные параметры)
+    const gostMap = {
+        "рост (высота человека)": 176.0,
+        "Высота уровня глаз": 164.5,
+        "Высота плечевого сустава": 149.0,
+        "Высота локтя": 108.0,
+        "Глубина грудной клетки в положении стоя": 22.0,
+        "Ширина грудной клетки в положении стоя": 32.0,
+        "Высота сидя (прямо)": 90.0,
+        "Высота уровня глаз в положении сидя": 79.0,
+        "Длина кисти руки": 18.5,
+        "Ширина кисти на уровне пястных костей": 8.7
+    };
+    function renderCompareTable() {
+        const tbody = document.getElementById('compareBody');
+        tbody.innerHTML = '';
+        for (let [param, gostVal] of Object.entries(gostMap)) {
+            const stat = statistics.find(s => s.param === param);
+            if (!stat) continue;
+            const diff = stat.median - gostVal;
+            const row = tbody.insertRow();
+            row.insertCell(0).innerText = param;
+            row.insertCell(1).innerText = stat.median.toFixed(2);
+            row.insertCell(2).innerText = gostVal.toFixed(2);
+            row.insertCell(3).innerHTML = diff > 0 ? `+${diff.toFixed(2)}` : diff.toFixed(2);
+        }
+    }
+
+    // Построение перцентильных кривых с помощью Chart.js
+    function renderPercentileCharts() {
+        const container = document.getElementById('chartsContainer');
+        container.innerHTML = '';
+        // Для краткости покажем первые 8 параметров, можно добавить скролл или выбор
+        const displayParams = statistics.slice(0, 8);
+        displayParams.forEach(stat => {
+            const card = document.createElement('div');
+            card.className = 'chart-card';
+            card.innerHTML = `<h4 style="margin-bottom:0.5rem;">📐 ${stat.param}</h4><canvas id="chart-${stat.param.replace(/[^a-z0-9]/gi,'_')}" width="400" height="250"></canvas>`;
+            container.appendChild(card);
+            const ctx = card.querySelector('canvas').getContext('2d');
+            const percentiles = [5, 25, 50, 75, 95];
+            const values = [stat.p5, stat.p25, stat.p50, stat.p75, stat.p95];
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: percentiles.map(p => p + '%'),
+                    datasets: [{
+                        label: 'Значение (см)',
+                        data: values,
+                        borderColor: '#003d7c',
+                        backgroundColor: 'rgba(0,61,124,0.05)',
+                        tension: 0.2,
+                        fill: true,
+                        pointBackgroundColor: '#ffb347',
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: { legend: { position: 'top' }, tooltip: { callbacks: { label: (ctx) => `${ctx.raw.toFixed(2)} см` } } }
+                }
+            });
+        });
+    }
+
+    // Вывод методологии в консоль
+    console.log("=== Статистический анализ на JavaScript (методология) ===");
+    console.log("• Очистка от 'None', преобразование в Number");
+    console.log("• Мода: частота, медиана: центральное значение, перцентили: линейная интерполяция");
+    statistics.slice(0,3).forEach(s => {
+        console.log(`${s.param}: медиана=${s.median.toFixed(2)}, 5%=${s.p5.toFixed(2)}, 95%=${s.p95.toFixed(2)}`);
+    });
+
+    // Запуск отрисовки
+    renderStatsTable();
+    renderCompareTable();
+    renderPercentileCharts();
