@@ -1,0 +1,77 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+.main__section {
+  width: 80%;
+  margin: 0 auto;
+  max-width: 1200px; /* Ограничение максимальной ширины */
+}
+
+/* Базовые стили для всех ссылок в шапке */
+.main__header a {
+  text-decoration: none;
+  text-transform: uppercase;
+  font-style: italic;
+  font-family: 'Times New Roman', serif; /* Добавлен запасной шрифт */
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Конкретные стили для ссылок основного меню */
+.main__header__link {
+  width: clamp(120px, 15%, 180px); /* Адаптивная ширина */
+  margin: 0 0.5rem; /* Горизонтальные отступы */
+}
+
+/* Стили для дополнительных ссылок */
+.main__header .link_a {
+  width: clamp(80px, 10%, 120px);
+  margin: 0.5rem;
+}
+
+
+
+#charts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 50px;
+    width: 95%;
+    margin-top: 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: 0.3s;
+    width: 350px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.title {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.value {
+    font-size: 20px;
+    color: #2c7be5;
+}
+img{
+    padding: 0 10px;
+    width: 95%;
+}
