@@ -11,35 +11,30 @@ h1 {
 .main__section {
   width: 80%;
   margin: 0 auto;
-  max-width: 1200px; /* Ограничение максимальной ширины */
+  max-width: 1200px;
 }
 
-/* Базовые стили для всех ссылок в шапке */
-.main__header a {
+.main__header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.main__header__link {
   text-decoration: none;
   text-transform: uppercase;
   font-style: italic;
-  font-family: 'Times New Roman', serif; /* Добавлен запасной шрифт */
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+  font-family: 'Times New Roman', serif;
+  padding: 1rem 1.5rem;
+  background: #f0f0f0;
+  border-radius: 4px;
+  transition: background 0.3s;
 }
 
-/* Конкретные стили для ссылок основного меню */
-.main__header__link {
-  width: clamp(120px, 15%, 180px); /* Адаптивная ширина */
-  margin: 0 0.5rem; /* Горизонтальные отступы */
+.main__header__link:hover {
+  background: #e0e0e0;
 }
-
-/* Стили для дополнительных ссылок */
-.main__header .link_a {
-  width: clamp(80px, 10%, 120px);
-  margin: 0.5rem;
-}
-
-
 
 
 #charts-container {
